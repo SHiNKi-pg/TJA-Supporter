@@ -9,4 +9,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TJA-Supporter.Lib\TJA-Supporter.Lib.csproj" />
+  </ItemGroup>
+
 </Project>
