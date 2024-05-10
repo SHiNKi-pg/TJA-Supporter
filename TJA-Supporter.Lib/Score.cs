@@ -127,6 +127,16 @@ namespace TJA_Supporter.Lib
         }
 
         /// <summary>
+        /// 指定した小節のインデックス番号までの長さ（秒）を返します。
+        /// </summary>
+        /// <param name="measureIndex"></param>
+        /// <returns></returns>
+        public double GetLengthUntil(int measureIndex)
+        {
+            return Measures.Take(measureIndex).Sum(m => m.Length);
+        }
+
+        /// <summary>
         /// 譜面データを文字列として返します。
         /// </summary>
         /// <returns></returns>
@@ -177,7 +187,7 @@ namespace TJA_Supporter.Lib
             foreach(var line in lines)
             {
                 // BPMCHANGE
-                if(line.PullOut(@"#BPMCHANGE (?<bpm>\d+)", g => double.Parse(g["bpm"].Value), out var outbpm))
+                if(line.PullOut(@"#BPMCHANGE (?<bpm>.+)", g => double.Parse(g["bpm"].Value), out var outbpm))
                 {
                     bpm = outbpm;
                     continue;

@@ -40,6 +40,11 @@ namespace TJA_Supporter.Lib
         public double Length { get => (60.0 / BPM) * 4 * Beat.Value; }
 
         /// <summary>
+        /// 1ノーツ間隔の長さ（秒）を取得します。
+        /// </summary>
+        public double NotesIntervalLength { get => Length / NotesCount; }
+
+        /// <summary>
         /// この小節のノーツのコンボ数を取得します。
         /// </summary>
         public int Combo { get => Notes
@@ -124,6 +129,20 @@ namespace TJA_Supporter.Lib
         public string ToNotesString()
         {
             return string.Join("", Notes);
+        }
+
+        /// <summary>
+        /// ノーツと、小節の最初からそのノーツまでの長さ（秒）を返します。
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<(Note, double)> EnumerateNotesAndLength()
+        {
+            int i = 0;
+            foreach(var note in Notes)
+            {
+                yield return (note, i * NotesIntervalLength);
+                i++;
+            }
         }
 
         /// <summary>
