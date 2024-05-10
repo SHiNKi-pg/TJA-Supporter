@@ -37,7 +37,7 @@ namespace TJA_Supporter.Lib
         /// <summary>
         /// 1小節の長さ（秒）を取得します。
         /// </summary>
-        public double Length { get => (60.0 / BPM) * Beat.Value; }
+        public double Length { get => (60.0 / BPM) * 4 * Beat.Value; }
 
         /// <summary>
         /// この小節のノーツのコンボ数を取得します。
@@ -187,7 +187,8 @@ namespace TJA_Supporter.Lib
 
             // 1小節の長さからはみ出している場合は1小節内に収まるようにする
             int measureOffset = (int)(relativeTime / Length);
-            relativeTime /= measureOffset;
+            if(measureOffset > 0)
+                relativeTime /= measureOffset;
 
             // ノーツ時間 = 1音符の間隔 * 位置
             double noteInterval = Length / NotesCount;

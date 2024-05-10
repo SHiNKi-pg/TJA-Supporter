@@ -15,10 +15,10 @@ namespace TJA_Supporter.Test
         }
 
         [Theory(DisplayName = "パーステスト")]
-        [InlineData("1111", 4, 4, 120, 4, 0.5)]
-        [InlineData("10201020", 4, 4, 120, 8, 0.5)]
-        [InlineData("10201020", 3, 4, 120, 8, 0.375)]
-        [InlineData("10203040", 8, 4, 120, 8, 1)]
+        [InlineData("1111", 4, 4, 120, 4, 2)]
+        [InlineData("10201020", 4, 4, 120, 8, 2)]
+        [InlineData("10201020", 3, 4, 120, 8, 1.5)]
+        [InlineData("10203040", 8, 4, 120, 8, 4)]
         public void ParseTest(string input, long bn, long bd, double bpm, int notesCount, double length)
         {
             var measure = Measure.Parse(input, bpm, new Lib.Math.Fraction(bn, bd));
