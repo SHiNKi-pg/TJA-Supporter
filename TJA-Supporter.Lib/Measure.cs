@@ -79,6 +79,15 @@ namespace TJA_Supporter.Lib
         }
 
         /// <summary>
+        /// ノーツを順番に並べただけの文字列を返します。
+        /// </summary>
+        /// <returns></returns>
+        public string ToNotesString()
+        {
+            return string.Join("", Notes);
+        }
+
+        /// <summary>
         /// 全てのノートの合間に指定したノーツを追加して返します。
         /// </summary>
         /// <param name="paddingNotes"></param>
@@ -87,6 +96,17 @@ namespace TJA_Supporter.Lib
         {
             var notes = Notes.SelectMany(n => paddingNotes.Prepend(n));
             return new Measure(notes, this.Beat);
+        }
+
+        /// <summary>
+        /// 全てのノートの合間に指定したノーツを追加して返します。
+        /// </summary>
+        /// <param name="noteStr"></param>
+        /// <returns></returns>
+        public Measure Padding(string noteStr)
+        {
+            Measure m = Measure.Parse(noteStr, this.Beat);
+            return new(m.Notes, this.Beat);
         }
 
         /// <summary>
