@@ -85,5 +85,35 @@ namespace TJA_Supporter.Lib
             return Type.ToString();
         }
         #endregion
+
+        #region Static Method
+        /// <summary>
+        /// 文字から<see cref="Note"/>オブジェクトに変換して返します。
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        public static Note? Parse(char character)
+        {
+            if (character is >= '0' and <= '9')
+            {
+                return new(character switch
+                {
+                    '0' => NoteType.None,
+                    '1' => NoteType.Dong,
+                    '2' => NoteType.Ka,
+                    '3' => NoteType.LargeDong,
+                    '4' => NoteType.LargeKa,
+                    '5' => NoteType.Consecutive,
+                    '6' => NoteType.LargeConsecutive,
+                    '7' => NoteType.Balloon,
+                    '8' => NoteType.ConsecutiveEnd,
+                    '9' => NoteType.Potato,
+                    _ => NoteType.None,
+                });
+            }
+            else
+                return null;
+        }
+        #endregion
     }
 }

@@ -112,5 +112,25 @@ namespace TJA_Supporter.Lib
         }
 
         #endregion
+
+        #region Static Method
+        /// <summary>
+        /// 文字列から<see cref="Measure"/>オブジェクトを作成します。
+        /// </summary>
+        /// <param name="notesStr"></param>
+        /// <param name="beat"></param>
+        /// <returns></returns>
+        public static Measure Parse(string notesStr, Fraction beat)
+        {
+            List<Note> notes = new();
+            foreach(char note in notesStr)
+            {
+                var n = Note.Parse(note);
+                if(n.HasValue)
+                    notes.Add(n.Value);
+            }
+            return new(notes, beat);
+        }
+        #endregion
     }
 }
