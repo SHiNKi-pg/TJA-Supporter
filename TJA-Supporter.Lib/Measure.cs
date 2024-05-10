@@ -25,14 +25,19 @@ namespace TJA_Supporter.Lib
         public Fraction Beat { get; set; }
 
         /// <summary>
+        /// BPM
+        /// </summary>
+        public double BPM { get; set; }
+
+        /// <summary>
         /// ノーツの個数を取得します。
         /// </summary>
         public int NotesCount { get => Notes.Count(); }
 
         /// <summary>
-        /// 1小節の長さを取得します。
+        /// 1小節の長さ（秒）を取得します。
         /// </summary>
-        public double Length { get => NotesCount * Beat.Value; }
+        public double Length { get => (60.0 / BPM) * Beat.Value; }
         #endregion
 
         #region Constructor
@@ -41,9 +46,10 @@ namespace TJA_Supporter.Lib
         /// </summary>
         /// <param name="notes">ノーツ</param>
         /// <param name="beat">拍子</param>
-        public Measure(IEnumerable<Note> notes, Fraction beat)
+        public Measure(IEnumerable<Note> notes, double bpm, Fraction beat)
         {
             this.Notes = notes;
+            this.BPM = bpm;
             this.Beat = beat;
         }
         #endregion
@@ -95,7 +101,7 @@ namespace TJA_Supporter.Lib
         public Measure Padding(IEnumerable<Note> paddingNotes)
         {
             var notes = Notes.SelectMany(n => paddingNotes.Prepend(n));
-            return new Measure(notes, this.Beat);
+            return new Measure(notes, this.BPM, this.Beat);
         }
 
         /// <summary>
@@ -105,8 +111,8 @@ namespace TJA_Supporter.Lib
         /// <returns></returns>
         public Measure Padding(string noteStr)
         {
-            Measure m = Measure.Parse(noteStr, this.Beat);
-            return new(m.Notes, this.Beat);
+            Measure m = Measure.Parse(noteStr, this.BPM, this.Beat);
+            return new(m.Notes, this.BPM, this.Beat);
         }
 
         /// <summary>
@@ -131,6 +137,16 @@ namespace TJA_Supporter.Lib
             return Padding(NoteType.None, paddingSize);
         }
 
+        /// <summary>
+        /// 小節の最初から指定した位置にあるノーツまでの長さ（秒）を返します。
+        /// 
+        /// </summary>
+        /// <param name="noteCount">何個目のノーツか</param>
+        /// <returns></returns>
+        public double GetLengthUntil(int noteCount)
+        {
+            return ((double)noteCount / NotesCount) * Length;
+        }
         #endregion
 
         #region Static Method
@@ -138,9 +154,10 @@ namespace TJA_Supporter.Lib
         /// 文字列から<see cref="Measure"/>オブジェクトを作成します。
         /// </summary>
         /// <param name="notesStr"></param>
+        /// <param name="bpm"></param>
         /// <param name="beat"></param>
         /// <returns></returns>
-        public static Measure Parse(string notesStr, Fraction beat)
+        public static Measure Parse(string notesStr, double bpm, Fraction beat)
         {
             List<Note> notes = new();
             foreach(char note in notesStr)
@@ -149,7 +166,7 @@ namespace TJA_Supporter.Lib
                 if(n.HasValue)
                     notes.Add(n.Value);
             }
-            return new(notes, beat);
+            return new(notes, bpm, beat);
         }
         #endregion
     }
