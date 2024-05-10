@@ -55,9 +55,9 @@ namespace TJA_Supporter.Lib
     }
 
     /// <summary>
-    /// ノート構造体
+    /// ノートクラス
     /// </summary>
-    public struct Note
+    public class Note
     {
         /// <summary>
         /// ノーツタイプ

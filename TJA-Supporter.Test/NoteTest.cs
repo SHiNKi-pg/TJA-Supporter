@@ -23,9 +23,9 @@ namespace TJA_Supporter.Test
         public void ParseTest(char type, NoteType noteType, string noteStr)
         {
             Note? note = Note.Parse(type);
-            if (note.HasValue)
+            if (note is not null)
             {
-                Note n = note.Value;
+                Note n = note;
                 Assert.Equal(n.ToString(), noteStr);
                 Assert.Equal(n.Type, noteType);
             }
@@ -43,7 +43,7 @@ namespace TJA_Supporter.Test
         public void ParseToNullTest(char character)
         {
             Note? note = Note.Parse(character);
-            if(note.HasValue)
+            if(note is not null)
                 Assert.Fail($"'{character}' note is not null.");
         }
     }

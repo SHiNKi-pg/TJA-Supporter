@@ -175,8 +175,11 @@ namespace TJA_Supporter.Lib
         /// <returns></returns>
         public Measure Padding(NoteType noteType, int paddingSize)
         {
-            Note note = new(noteType, 1);
-            return Padding(Enumerable.Repeat(note, paddingSize));
+            // NOTE: Enumerable.Repeatだと同じ参照のオブジェクトが作成されるのでfor文にする
+            List<Note> notes = new();
+            for (int i = 0; i < paddingSize; i++)
+                notes.Add(new(noteType, 1));
+            return Padding(notes);
         }
 
         /// <summary>
@@ -241,8 +244,8 @@ namespace TJA_Supporter.Lib
             foreach(char note in notesStr)
             {
                 var n = Note.Parse(note);
-                if(n.HasValue)
-                    notes.Add(n.Value);
+                if(n is not null)
+                    notes.Add(n);
             }
             return new(notes, bpm, beat);
         }
@@ -256,7 +259,11 @@ namespace TJA_Supporter.Lib
         /// <returns></returns>
         public static Measure CreateBlank(double bpm, Fraction measure, int notesCount)
         {
-            return new(Enumerable.Repeat(new Note(NoteType.None), notesCount), bpm, measure);
+            // NOTE: Enumerable.Repeatだと同じ参照のオブジェクトが作成されるのでfor文にする
+            List<Note> notes = new();
+            for (int i = 0; i < notesCount; i++)
+                notes.Add(new Note(NoteType.None));
+            return new(notes, bpm, measure);
         }
 
         /// <summary>

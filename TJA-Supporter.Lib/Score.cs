@@ -161,8 +161,8 @@ namespace TJA_Supporter.Lib
                 
                 score.AppendLine(measure.ToString(beforeScroll));
                 Note? lastNote = measure.LastNote;
-                if(lastNote.HasValue)
-                    beforeScroll = lastNote.Value.Scroll;
+                if(lastNote is not null)
+                    beforeScroll = lastNote.Scroll;
             }
             return score.ToString();
         }
@@ -221,10 +221,10 @@ namespace TJA_Supporter.Lib
                         else
                         {
                             Note? note = Note.Parse(c);
-                            if (note.HasValue)
+                            if (note is not null)
                             {
                                 // NOTE: note.Value.Scroll のように直接指定できないので一時変数に代入してから設定している
-                                Note nt = note.Value;
+                                Note nt = note;
                                 nt.Scroll = scroll;
                                 notes.Add(nt);
                             }
