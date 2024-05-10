@@ -82,7 +82,7 @@ namespace TJA_Supporter.Lib
         #region Method
         public override string ToString()
         {
-            return Type.ToString();
+            return ((int)Type).ToString();
         }
         #endregion
 
