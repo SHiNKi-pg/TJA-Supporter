@@ -150,7 +150,9 @@ namespace TJA_Supporter.Lib
                 }
                 
                 score.AppendLine(measure.ToString(beforeScroll));
-                beforeScroll = measure.Notes.Last().Scroll;
+                Note? lastNote = measure.LastNote;
+                if(lastNote.HasValue)
+                    beforeScroll = lastNote.Value.Scroll;
             }
             return score.ToString();
         }
@@ -175,8 +177,9 @@ namespace TJA_Supporter.Lib
             foreach(var line in lines)
             {
                 // BPMCHANGE
-                if(line.PullOut(@"#BPMCHANGE (?<bpm>\d+)", g => double.Parse(g["bpm"].Value), out bpm))
+                if(line.PullOut(@"#BPMCHANGE (?<bpm>\d+)", g => double.Parse(g["bpm"].Value), out var outbpm))
                 {
+                    bpm = outbpm;
                     continue;
                 }
                 // MEASURE
@@ -198,7 +201,7 @@ namespace TJA_Supporter.Lib
                 {
                     foreach(var c in line)
                     {
-                        if(c != ',')
+                        if(c == ',')
                         {
                             // 終点記号
                             Measure measure = new(notes, bpm, beat);

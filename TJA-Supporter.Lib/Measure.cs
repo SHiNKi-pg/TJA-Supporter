@@ -58,9 +58,18 @@ namespace TJA_Supporter.Lib
         }
 
         /// <summary>
-        /// 末尾にあるノーツを取得します。
+        /// 末尾にあるノーツを取得します。存在しない場合は nullを返します。
         /// </summary>
-        public Note LastNote { get => Notes.Last(); }
+        public Note? LastNote
+        {
+            get
+            {
+                if (Notes.Any())
+                    return Notes.Last();
+                else
+                    return null;
+            }
+        }
         #endregion
 
         #region Constructor
@@ -87,19 +96,20 @@ namespace TJA_Supporter.Lib
                 if(note.Scroll == beforeScrollSpeed)
                 {
                     // 前回スクロール値と同じ場合は同じ行に出力
-                    notes.Append(note.Type.ToString());
+                    notes.Append(((int)note.Type).ToString());
                 }
                 else
                 {
                     notes.AppendLine();
                     notes.AppendLine($"#SCROLL {note.Scroll.ToComplexString()}");
                     beforeScrollSpeed = note.Scroll;
+                    notes.Append(((int)note.Type).ToString());
                 }
             }
             if (notes.Length > 0)
                 return notes.ToString() + ",";
             else
-                return NoteType.None.ToString() + ",";
+                return ((int)NoteType.None).ToString() + ",";
         }
 
         public override string ToString()
