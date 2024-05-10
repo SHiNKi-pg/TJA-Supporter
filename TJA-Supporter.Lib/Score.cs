@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TJA_Supporter.Lib.Math;
+using TJA_Supporter.Lib.Text;
 
 namespace TJA_Supporter.Lib
 {
@@ -152,6 +153,73 @@ namespace TJA_Supporter.Lib
                 beforeScroll = measure.Notes.Last().Scroll;
             }
             return score.ToString();
+        }
+        #endregion
+
+        #region Static Method
+        public static Score Parse(string scoreStr)
+        {
+            // CR文字を空白に置換する
+            scoreStr = scoreStr.Replace('\r', '\0');
+
+            List<Measure> measures = new();
+            List<Note> notes = new();
+
+            // 初期BPMと拍子、スクロール
+            double bpm = 120;
+            Fraction beat = new(4, 4);
+            Complex scroll = 1;
+
+            // 1行ずつ譜面解析
+            var lines = scoreStr.Split('\n');
+            foreach(var line in lines)
+            {
+                // BPMCHANGE
+                if(line.PullOut(@"#BPMCHANGE (?<bpm>\d+)", g => double.Parse(g["bpm"].Value), out bpm))
+                {
+                    continue;
+                }
+                // MEASURE
+                else if(line.PullOut(@"#MEASURE (?<n>\d+)/(?<d>\d+)",
+                    g => (long.Parse(g["n"].Value), long.Parse(g["d"].Value)),
+                    out var meas))
+                {
+                    beat = new(meas.Item1, meas.Item2);
+                    continue;
+                }
+                // SCROLL
+                else if(line.PullOut(@"#SCROLL (?<c>.+)", g => g["c"].Value, out var complexStr))
+                {
+                    // TODO: SCROLLも解析する
+                    continue;
+                }
+                // ノーツ解析
+                else
+                {
+                    foreach(var c in line)
+                    {
+                        if(c != ',')
+                        {
+                            // 終点記号
+                            Measure measure = new(notes, bpm, beat);
+                            measures.Add(measure);
+                            notes = new();
+                        }
+                        else
+                        {
+                            Note? note = Note.Parse(c);
+                            if (note.HasValue)
+                            {
+                                // NOTE: note.Value.Scroll のように直接指定できないので一時変数に代入してから設定している
+                                Note nt = note.Value;
+                                nt.Scroll = scroll;
+                                notes.Add(nt);
+                            }
+                        }
+                    }
+                }
+            }
+            return new Score(measures);
         }
         #endregion
 
