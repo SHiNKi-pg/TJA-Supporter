@@ -188,11 +188,11 @@ namespace TJA_Supporter.Lib
             // 1小節の長さからはみ出している場合は1小節内に収まるようにする
             int measureOffset = (int)(relativeTime / Length);
             if(measureOffset > 0)
-                relativeTime /= measureOffset;
+                relativeTime -= measureOffset * Length;
 
             // ノーツ時間 = 1音符の間隔 * 位置
             double noteInterval = Length / NotesCount;
-            int index = (int)(relativeTime / noteInterval);
+            int index = ((int)(relativeTime / noteInterval) % NotesCount);
 
             return (measureOffset, index);
         }
