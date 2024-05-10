@@ -38,6 +38,29 @@ namespace TJA_Supporter.Lib
         /// 1小節の長さ（秒）を取得します。
         /// </summary>
         public double Length { get => (60.0 / BPM) * Beat.Value; }
+
+        /// <summary>
+        /// この小節のノーツのコンボ数を取得します。
+        /// </summary>
+        public int Combo { get => Notes
+                .Where(n => n.Type is NoteType.Dong or NoteType.Ka or NoteType.LargeDong or NoteType.LargeKa)
+                .Count();
+        }
+
+        /// <summary>
+        /// 指定したインデックスにあるノーツを取得します。
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Note this[int index]
+        {
+            get => Notes.ElementAt(index);
+        }
+
+        /// <summary>
+        /// 末尾にあるノーツを取得します。
+        /// </summary>
+        public Note LastNote { get => Notes.Last(); }
         #endregion
 
         #region Constructor
@@ -147,6 +170,31 @@ namespace TJA_Supporter.Lib
         {
             return ((double)noteCount / NotesCount) * Length;
         }
+
+        /// <summary>
+        /// 指定した音符の発音時間から、この小節のどの位置に相当するかを返します。
+        /// </summary>
+        /// <param name="measureStartTime">この小節が流れ始める時間</param>
+        /// <param name="noteHitTime">音符の場所（時間）</param>
+        /// <returns></returns>
+        public (int MeasureOffset, int Index) GetNearIndex(double measureStartTime, double noteHitTime)
+        {
+            if (measureStartTime > noteHitTime)
+                throw new ArgumentException("measureStartTime が noteHitTimeより前の時間です。");
+
+            // この小節内の音符の相対位置を求める
+            double relativeTime = noteHitTime - measureStartTime;
+
+            // 1小節の長さからはみ出している場合は1小節内に収まるようにする
+            int measureOffset = (int)(relativeTime / Length);
+            relativeTime /= measureOffset;
+
+            // ノーツ時間 = 1音符の間隔 * 位置
+            double noteInterval = Length / NotesCount;
+            int index = (int)(relativeTime / noteInterval);
+
+            return (measureOffset, index);
+        }
         #endregion
 
         #region Static Method
@@ -168,6 +216,34 @@ namespace TJA_Supporter.Lib
             }
             return new(notes, bpm, beat);
         }
+
+        /// <summary>
+        /// 全て休符音符で構成されている小節を作成して返します。
+        /// </summary>
+        /// <param name="bpm">BPM</param>
+        /// <param name="measure">拍子</param>
+        /// <param name="notesCount">休符音符の数</param>
+        /// <returns></returns>
+        public static Measure CreateBlank(double bpm, Fraction measure, int notesCount)
+        {
+            return new(Enumerable.Repeat(new Note(NoteType.None), notesCount), bpm, measure);
+        }
+
+        /// <summary>
+        /// 指定した音符の発音時間から、小節のどの位置に相当するかを返します。
+        /// </summary>
+        /// <param name="bpm">BPM</param>
+        /// <param name="measure">拍子</param>
+        /// <param name="notesCount">1小節内の休符を含めたノーツ数</param>
+        /// <param name="measureStartTime">この小節が流れ始める時間</param>
+        /// <param name="noteHitTime">音符の場所（時間）</param>
+        /// <returns></returns>
+        public static (int MeasureOffset, int Index) GetNearIndex(double bpm, Fraction measure, int notesCount, double measureStartTime, double noteHitTime)
+        {
+            var tmpMeasure = CreateBlank(bpm, measure, notesCount);
+            return tmpMeasure.GetNearIndex(measureStartTime, noteHitTime);
+        }
+
         #endregion
     }
 }
