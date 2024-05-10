@@ -22,6 +22,13 @@ namespace TJA_Supporter.Lib.Math
         public static long GCD(long x, long y)
         {
             // NOTE: ユークリッドの互除法を用いて最大公約数を求める。
+            if(x < y)
+            {
+                // yの方が大きければ変数の値を入れ替える
+                long tmp = x;
+                x = y;
+                y = tmp;
+            }
             while (true)
             {
                 long remainder = x % y;
