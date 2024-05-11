@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using TJA_Supporter.Lib.Text;
 
 namespace TJA_Supporter.Lib.Math
 {
@@ -73,6 +74,33 @@ namespace TJA_Supporter.Lib.Math
                 compStr.Append("i");
                 return compStr.ToString();
             }
+        }
+        #endregion
+
+        #region ParseToComplex
+        /// <summary>
+        /// 複素数文字列を<see cref="Complex"/>オブジェクトに変換します。
+        /// </summary>
+        /// <param name="complexText"></param>
+        /// <returns></returns>
+        public static Complex ParseToComplex(string complexText)
+        {
+            bool result = complexText.PullOut(@"((?<real>-?\d+\.?\d*))?\+?((?<imaginary>-?\d+\.?\d*)i)?",
+                gc =>
+                {
+                    double real = 0;
+                    double imaginary = 0;
+                    if (gc.ContainsKey("real") && !string.IsNullOrEmpty(gc["real"].Value))
+                        real = double.Parse(gc["real"].Value);
+                    if (gc.ContainsKey("imaginary") && !string.IsNullOrEmpty(gc["imaginary"].Value))
+                        imaginary = double.Parse(gc["imaginary"].Value);
+                    return new(real, imaginary);
+                },
+                out Complex c);
+            if (result)
+                return c;
+            else
+                throw new ArgumentException($"Text '{complexText} cannot parse.'");
         }
         #endregion
     }

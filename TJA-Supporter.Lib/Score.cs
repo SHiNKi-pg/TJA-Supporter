@@ -203,7 +203,8 @@ namespace TJA_Supporter.Lib
                 // SCROLL
                 else if(line.PullOut(@"#SCROLL (?<c>.+)", g => g["c"].Value, out var complexStr))
                 {
-                    // TODO: SCROLLも解析する
+                    Complex scr = MathHelper.ParseToComplex(complexStr);
+                    scroll = scr;
                     continue;
                 }
                 // ノーツ解析
