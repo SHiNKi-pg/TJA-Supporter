@@ -85,23 +85,6 @@ namespace TJA_Supporter.Lib
             return ((int)Type).ToString();
         }
 
-        /// <summary>
-        /// ノーツタイプを変更します。
-        /// </summary>
-        /// <param name="noteType"></param>
-        public void ChangeType(NoteType noteType)
-        {
-            this.Type = noteType;
-        }
-
-        /// <summary>
-        /// ノーツの速度を変更します。
-        /// </summary>
-        /// <param name="complex"></param>
-        public void ChangeScroll(Complex complex)
-        {
-            this.Scroll = complex;
-        }
         #endregion
 
         #region Static Method

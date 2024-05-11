@@ -14,7 +14,7 @@ namespace TJA_Supporter.Lib.Scores
     public static class ScoreHelper
     {
         /// <summary>
-        /// 
+        /// 元の譜面を出来る限り維持するように別の譜面とマージします。
         /// </summary>
         /// <param name="baseBpm">ベースとなるBPM</param>
         /// <param name="baseBeat">ベースとなる拍子</param>
@@ -48,8 +48,9 @@ namespace TJA_Supporter.Lib.Scores
                     foreach(var noteAndLength in measure.EnumerateNotesAndLength().Where(n => n.Item1.Type != NoteType.None))
                     {
                         var offsetAndIndex = mergedScore.FirstMeasure!.Value.GetNearIndex(0, totalLength + noteAndLength.Item2);
-                        mergedScore[offsetAndIndex.MeasureOffset][offsetAndIndex.Index].ChangeType(noteAndLength.Item1.Type);
-                        mergedScore[offsetAndIndex.MeasureOffset][offsetAndIndex.Index].ChangeScroll(scoreInfo.Item2);
+                        Note note = mergedScore[offsetAndIndex.MeasureOffset][offsetAndIndex.Index];
+                        note.Type = noteAndLength.Item1.Type;
+                        note.Scroll = noteAndLength.Item1.Scroll * scoreInfo.Item2;
                     }
                     i_measure++;
                 }
